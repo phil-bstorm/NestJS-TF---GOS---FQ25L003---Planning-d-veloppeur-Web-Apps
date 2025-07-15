@@ -7,7 +7,7 @@ export class TodoService {
       id: 1,
       title: 'Aller faire les courses',
       description: 'Ramener à manger pour la semaine',
-      complete: false,
+      completed: false,
     },
   ];
 
@@ -22,6 +22,7 @@ export class TodoService {
     const newTodo = {
       id: this.todos.length + 1,
       title: body.title,
+      description: body.description || null,
       completed: false,
     };
     this.todos.push(newTodo);

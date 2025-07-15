@@ -10,6 +10,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { TodoService } from '../services/todo.service';
+import { TodoCompletionFormDto, TodoFormDto, TodoUpdateFormDto } from 'src/dtos/todo.form.dto';
 
 @Controller('todo')
 export class TodoController {
@@ -21,7 +22,7 @@ export class TodoController {
   }
 
   @Post()
-  async create(@Body() body: any) {
+  async create(@Body() body: TodoFormDto) {
     return this.todoService.create(body);
   }
 
@@ -31,12 +32,15 @@ export class TodoController {
   }
 
   @Put(':id')
-  async updateTodo(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
+  async updateTodo(@Param('id', ParseIntPipe) id: number, @Body() body: TodoUpdateFormDto) {
     return this.todoService.update(id, body);
   }
 
   @Patch(':id/complete')
-  async toggleTodoCompletion(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
+  async toggleTodoCompletion(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: TodoCompletionFormDto,
+  ) {
     return this.todoService.toggleTodoCompletion(id, body);
   }
 
