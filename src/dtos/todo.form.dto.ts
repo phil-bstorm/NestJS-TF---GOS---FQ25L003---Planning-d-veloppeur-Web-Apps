@@ -25,5 +25,6 @@ export class TodoUpdateFormDto {
 
 export class TodoCompletionFormDto {
   @IsBoolean()
-  completed: boolean;
+  @IsOptional()
+  completed?: boolean;
 }

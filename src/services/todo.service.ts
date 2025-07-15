@@ -1,4 +1,7 @@
 import { Body, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TodoEntity } from 'src/entities/todo.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TodoService {
@@ -11,69 +14,59 @@ export class TodoService {
     },
   ];
 
+  constructor(
+    @InjectRepository(TodoEntity)
+    private readonly todoRepository: Repository<TodoEntity>,
+  ) {}
+
   async getAll() {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
-    return this.todos;
+    return this.todoRepository.find();
   }
 
-  async create(body: any) {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
-
-    const newTodo = {
-      id: this.todos.length + 1,
-      title: body.title,
-      description: body.description || null,
-      completed: false,
-    };
-    this.todos.push(newTodo);
-    return newTodo;
+  async create(body: TodoEntity) {
+    return this.todoRepository.save(body);
   }
 
   async getById(id: number) {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
-
-    const todo = this.todos.find((todo) => todo.id === id);
+    const todo = await this.todoRepository.findOne({ where: { id } });
     if (!todo) {
       throw new Error('Todo not found');
     }
     return todo;
   }
 
-  async update(id: number, body: any) {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
-
-    const existingTodo = this.todos.find((todo) => todo.id === id);
+  async update(body: Partial<TodoEntity>) {
+    const existingTodo = await this.todoRepository.findOne({ where: { id: body.id } });
     if (!existingTodo) {
       throw new Error('Todo not found');
     }
 
     existingTodo.title = body.title || existingTodo.title;
+    if (body.description !== undefined) {
+      existingTodo.description = body.description;
+    }
 
-    return existingTodo;
+    return await this.todoRepository.save(existingTodo);
   }
 
   async delete(id: number) {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
-
-    const index = this.todos.findIndex((todo) => todo.id === id);
-    if (index === -1) {
+    const existingTodo = await this.todoRepository.findOne({ where: { id } });
+    if (!existingTodo) {
       throw new Error('Todo not found');
     }
 
-    const deletedTodo = this.todos.splice(index, 1);
-    return deletedTodo[0];
+    await this.todoRepository.remove(existingTodo);
+    return existingTodo;
   }
 
-  async toggleTodoCompletion(id: number, body: any) {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
-
-    const todo = this.todos.find((todo) => todo.id === id);
-    if (!todo) {
+  async toggleTodoCompletion(body: Partial<TodoEntity>) {
+    const existingTodo = await this.todoRepository.findOne({ where: { id: body.id } });
+    if (!existingTodo) {
       throw new Error('Todo not found');
     }
+    existingTodo.completed =
+      body.completed !== undefined ? body.completed : !existingTodo.completed;
 
-    todo.completed = body.completed !== undefined ? body.completed : !todo.completed;
-
-    return todo;
+    return existingTodo;
   }
 }

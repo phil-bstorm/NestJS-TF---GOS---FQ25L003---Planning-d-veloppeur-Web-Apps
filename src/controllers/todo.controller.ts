@@ -11,6 +11,12 @@ import {
 } from '@nestjs/common';
 import { TodoService } from '../services/todo.service';
 import { TodoCompletionFormDto, TodoFormDto, TodoUpdateFormDto } from 'src/dtos/todo.form.dto';
+import {
+  todoCompletionFormDtoToEntity,
+  todoEntityToTodoDto,
+  todoFormDtoToEntity,
+  todoUpdateFormDtoToEntity,
+} from 'src/mappers/todo.mappers';
 
 @Controller('todo')
 export class TodoController {
@@ -18,22 +24,29 @@ export class TodoController {
 
   @Get()
   async getAll() {
-    return this.todoService.getAll();
+    const todos = await this.todoService.getAll();
+    return todos.map(todoEntityToTodoDto);
   }
 
   @Post()
   async create(@Body() body: TodoFormDto) {
-    return this.todoService.create(body);
+    const entity = todoFormDtoToEntity(body);
+    const newEntity = await this.todoService.create(entity);
+    return todoEntityToTodoDto(newEntity);
   }
 
   @Get(':id')
   async getById(@Param('id', ParseIntPipe) id: number) {
-    return this.todoService.getById(id);
+    const entity = await this.todoService.getById(id);
+    return todoEntityToTodoDto(entity);
   }
 
   @Put(':id')
   async updateTodo(@Param('id', ParseIntPipe) id: number, @Body() body: TodoUpdateFormDto) {
-    return this.todoService.update(id, body);
+    const oldEntity = await this.todoService.getById(id);
+    const entity = todoUpdateFormDtoToEntity(body, oldEntity);
+    const newEntity = await this.todoService.update(entity);
+    return todoEntityToTodoDto(newEntity);
   }
 
   @Patch(':id/complete')
@@ -41,11 +54,15 @@ export class TodoController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: TodoCompletionFormDto,
   ) {
-    return this.todoService.toggleTodoCompletion(id, body);
+    const oldEntity = await this.todoService.getById(id);
+    const entity = todoCompletionFormDtoToEntity(body, oldEntity);
+    const newEntity = await this.todoService.toggleTodoCompletion(entity);
+    return todoEntityToTodoDto(newEntity);
   }
 
   @Delete(':id')
   async deleteTodo(@Param('id', ParseIntPipe) id: number) {
-    return this.todoService.delete(id);
+    const entity = await this.todoService.delete(id);
+    return todoEntityToTodoDto(entity);
   }
 }
