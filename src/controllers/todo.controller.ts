@@ -20,6 +20,9 @@ import {
 } from 'src/mappers/todo.mappers';
 import { ConnectedGuard } from 'src/guards/connected.guard';
 import { AdminGuard } from 'src/guards/admin.guard';
+import { RequireRoles } from 'src/guards/require-roles/require-roles.decorator';
+import { UserRole } from 'src/shared/enums/user-role.enum';
+import { RequireRolesGuard } from 'src/guards/require-roles/require-roles.guard';
 
 @Controller('todo')
 export class TodoController {
@@ -32,6 +35,8 @@ export class TodoController {
   }
 
   @Post()
+  @RequireRoles(UserRole.Admin, UserRole.Manager)
+  @UseGuards(RequireRolesGuard)
   async create(@Body() body: TodoFormDto) {
     const entity = todoFormDtoToEntity(body);
     const newEntity = await this.todoService.create(entity);
