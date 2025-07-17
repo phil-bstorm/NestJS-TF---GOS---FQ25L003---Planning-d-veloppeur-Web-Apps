@@ -5,15 +5,6 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class TodoService {
-  todos = [
-    {
-      id: 1,
-      title: 'Aller faire les courses',
-      description: 'Ramener à manger pour la semaine',
-      completed: false,
-    },
-  ];
-
   constructor(
     @InjectRepository(TodoEntity)
     private readonly todoRepository: Repository<TodoEntity>,
@@ -35,18 +26,8 @@ export class TodoService {
     return todo;
   }
 
-  async update(body: Partial<TodoEntity>) {
-    const existingTodo = await this.todoRepository.findOne({ where: { id: body.id } });
-    if (!existingTodo) {
-      throw new Error('Todo not found');
-    }
-
-    existingTodo.title = body.title || existingTodo.title;
-    if (body.description !== undefined) {
-      existingTodo.description = body.description;
-    }
-
-    return await this.todoRepository.save(existingTodo);
+  async update(body: TodoEntity) {
+    return await this.todoRepository.save(body);
   }
 
   async delete(id: number) {
@@ -59,14 +40,7 @@ export class TodoService {
     return existingTodo;
   }
 
-  async toggleTodoCompletion(body: Partial<TodoEntity>) {
-    const existingTodo = await this.todoRepository.findOne({ where: { id: body.id } });
-    if (!existingTodo) {
-      throw new Error('Todo not found');
-    }
-    existingTodo.completed =
-      body.completed !== undefined ? body.completed : !existingTodo.completed;
-
-    return existingTodo;
+  async toggleTodoCompletion(body: TodoEntity) {
+    return await this.todoRepository.save(body);
   }
 }
