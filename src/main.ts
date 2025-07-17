@@ -5,6 +5,10 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // Configuration CORS
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN || '*',
+  });
 
   // Validation des DTOs
   app.useGlobalPipes(new ValidationPipe());
