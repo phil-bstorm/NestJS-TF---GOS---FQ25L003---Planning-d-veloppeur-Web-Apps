@@ -11,7 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { TodoService } from '../services/todo.service';
-import { TodoCompletionFormDto, TodoFormDto, TodoUpdateFormDto } from 'src/dtos/todo.form.dto';
+import {
+  TodoCompletionFormDto,
+  TodoCreateFormDto,
+  TodoUpdateFormDto,
+} from 'src/dtos/todo.form.dto';
 import {
   todoCompletionFormDtoToEntity,
   todoEntityToTodoDto,
@@ -51,7 +55,7 @@ export class TodoController {
     type: todoEntityToTodoDto,
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
-  async create(@Body() body: TodoFormDto) {
+  async create(@Body() body: TodoCreateFormDto) {
     const entity = todoFormDtoToEntity(body);
     const newEntity = await this.todoService.create(entity);
     return todoEntityToTodoDto(newEntity);

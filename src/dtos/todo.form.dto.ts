@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
-export class TodoFormDto {
+export class TodoCreateFormDto {
   @ApiProperty({
     description: 'The title of the todo item',
     example: 'Buy groceries',

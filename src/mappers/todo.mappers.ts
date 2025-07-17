@@ -1,9 +1,13 @@
 import { TodoDto } from 'src/dtos/todo.dto';
-import { TodoCompletionFormDto, TodoFormDto, TodoUpdateFormDto } from 'src/dtos/todo.form.dto';
+import {
+  TodoCompletionFormDto,
+  TodoCreateFormDto,
+  TodoUpdateFormDto,
+} from 'src/dtos/todo.form.dto';
 import { TodoEntity } from 'src/entities/todo.entity';
 
 // DTO -> Entité
-export function todoFormDtoToEntity(dto: TodoFormDto): TodoEntity {
+export function todoFormDtoToEntity(dto: TodoCreateFormDto): TodoEntity {
   const entity = new TodoEntity();
   entity.title = dto.title;
   if (dto.description !== undefined) {

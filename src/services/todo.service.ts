@@ -1,6 +1,7 @@
-import { Body, Injectable, NotFoundException } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TodoEntity } from 'src/entities/todo.entity';
+import { NotFoundException } from 'src/shared/models/errors.model';
 import { Repository } from 'typeorm';
 
 @Injectable()
