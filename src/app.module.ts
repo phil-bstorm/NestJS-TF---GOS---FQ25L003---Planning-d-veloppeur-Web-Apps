@@ -12,6 +12,8 @@ import { LoggingMiddleware } from './middlewares/logging.middleware';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { UserController } from './controllers/user.controller';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
   imports: [
@@ -42,8 +44,9 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    NestjsFormDataModule,
   ],
-  controllers: [TodoController, AuthController],
+  controllers: [TodoController, AuthController, UserController],
   providers: [TodoService, UserService],
 })
 export class AppModule {

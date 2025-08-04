@@ -17,4 +17,7 @@ export class UserEntity {
 
   @Column({ default: UserRole.Client })
   role: UserRole;
+
+  @Column({ nullable: true })
+  avatar: string; // url vers l'image de l'utilisateur (stockée sur le serveur)
 }
